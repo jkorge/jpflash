@@ -51,15 +51,12 @@ jobs:
 
             - name: Configure Pages
               uses: actions/configure-pages@v5
-              working-directory: ./jpflash/client
 
             - name: Upload Pages Artifact
-              working-directory: ./jpflash/client
               uses: actions/upload-pages-artifact@v3
               with:
-                  path: './dist'
+                  path: './jpflash/client/dist'
 
             - name: Deploy To GitHub Pages
               id: deployment
               uses: actions/deploy-pages@v4
-              working-directory: ./jpflash/client
