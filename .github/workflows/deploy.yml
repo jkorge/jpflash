@@ -56,8 +56,8 @@ jobs:
             - name: Upload Pages Artifact
               working-directory: ./jpflash/client
               uses: actions/upload-pages-artifact@v3
-                with:
-                    path: './dist'
+              with:
+                  path: './dist'
 
             - name: Deploy To GitHub Pages
               id: deployment
