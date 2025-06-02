@@ -31,10 +31,6 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-
-            - name: CD
-              run: cd client
-
             - name: Checkout
               uses: actions/checkout@v4
 
@@ -42,7 +38,8 @@ jobs:
               uses: actions/setup-node@v4
               with:
                 node-version: lts/*
-                cache: 'npm'
+                cache: npm
+                cache-dependency-path: ./jpflash/client/package-lock.json
 
             - name: Install Dependencies
               run: npm ci
