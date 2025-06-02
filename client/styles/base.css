@@ -1,0 +1,73 @@
+:root {
+    /* Color Palette */
+    --color-main: #efd6ff; /* Lavender */
+    --color-dark: #402d4e; /* Dark Purple */
+    --color-comp: #007663; /* Green */
+    --color-acct: #fffade; /* Off-White */
+    --color-incorrect: #a63b3b; /* Red  */
+    --color-correct: #387028; /* Green */
+
+    /* Faded Color Palette */
+    --fcolor-main: #efd6ff55; /* Lavender */
+    --fcolor-dark: #402d4e55; /* Dark Purple */
+    --fcolor-comp: #00766355; /* Green */
+    --fcolor-acct: #fffade55; /* Off-White */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+*:lang(jp) {
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 2rem;
+    font-weight: 580;
+}
+
+@font-face {
+    font-family: radical;
+    src: url("../assets/JapaneseRadicals-Regular.otf") format("opentype");
+}
+
+.radical {
+    font-family: radical;
+}
+
+html {
+    background-color: #fff;
+    color: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        background-color: #000;
+        color: #fff;
+    }
+}
+
+body {
+
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    header {
+        height: 10%;
+        width: 100%;
+    }
+
+    main {
+        height: 90%;
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,23 @@
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-main);
+    color: #000;
+    width: 100%;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6rem;
+    list-style: none;
+    font-size: 2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    nav {
+        background-color: var(--color-dark);
+        color: #fff;
+    }
+}

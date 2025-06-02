@@ -1,0 +1,339 @@
+.searchBar {
+    position: relative;
+    width: 75%;
+    height: 2rem;
+    margin: 2rem;
+    align-self: center;
+    border: 2px #000 solid;
+
+    .searchInput {
+        position: absolute;
+        left: 0;
+        width: 95%;
+        height: 100%;
+        font-size: 1.5rem;
+        border: none;
+    }
+
+    .searchButton {
+        position: absolute;
+        right: 0%;
+        width: 5%;
+        height: 100%;
+        background-color: var(--color-main);
+        border: none;
+        color: #000;
+    }
+
+}
+
+.flipButton {
+    align-self: center;
+    margin: 3rem;
+    width: 30%;
+    height: 2rem;
+    background-color: var(--color-correct);
+    border: unset;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.nextButton {
+    align-self: center;
+    width: 30%;
+    height: 2rem;
+    background-color: var(--color-incorrect);
+    border: unset;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.cardContainer {
+    height: 50%;
+    width: 75%;
+    align-self: center;
+    border-radius: 10px;
+    box-shadow: 0 0 2rem 0 var(--color-dark);
+    font-size: 1.5rem;
+
+    transition: transform 1.5s;
+    transform-style: preserve-3d;
+}
+
+
+.cardFront,
+.cardBack {
+    height: 100%;
+    width: 100%;
+    backface-visibility: hidden;
+}
+
+.cardFront {
+
+    position: absolute;
+    display: flex;
+    align-items: center;
+
+    h2 {
+        width: 100%;
+        text-align: center;
+        font-size: 20rem;
+    }
+}
+
+.cardBack {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    transform: rotateY(180deg);
+
+    h2 {
+
+        position: absolute;
+        top: 0;
+        height: 10%;
+        width: 100%;
+
+        font-size: 2.5rem;
+        text-align: center;
+    }
+
+    .dataContainer {
+
+        position: absolute;
+        top: 10%;
+        left: 0;
+        height: 90%;
+        width: 50%;
+
+        padding: 0 1rem 1rem 1rem;
+
+        .dataGrid {
+
+            height: 100%;
+            width: 100%;
+
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
+
+            ul {
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                list-style: none;
+
+                border-width: 0 1px 1px 1px;
+                border-color: var(--color-comp);
+                border-style: solid;
+
+                li {
+                    flex: 0;
+                    padding-left: 1rem;
+                }
+            }
+
+            ul:first-of-type {
+                border-width: 1px 1px 1px 1px;
+            }
+
+            .rowHeader {
+
+                display: flex;
+
+                border-width: 0 0 1px 1px;
+                border-color: var(--color-comp);
+                border-style: solid;
+
+                h3 {
+                    flex: 1;
+                    text-align: center;
+                    align-self: center;
+                }
+            }
+
+            .rowHeader:first-of-type {
+                border-width: 1px 0 1px 1px;
+            }
+
+            .rowHeader:nth-of-type(odd) {
+                background-color: var(--color-main);
+            }
+
+            .rowHeader:nth-of-type(even) {
+                background-color: var(--color-acct);
+            }
+
+        }
+
+    }
+
+    .videoContainer {
+
+        position: absolute;
+
+        height: 248px;
+        width: 248px;
+
+        top: 10%;
+
+        /* Get the video centered in the available space */
+        left: calc(50% + (50% - 248px) / 2);
+    }
+
+    .examplesContainer {
+
+        position: absolute;
+        top: calc(10% + 300px);
+        left: 50%;
+        width: 50%;
+        height: calc(90% - calc(10% + 250px));
+
+        overflow: auto;
+        text-align: center;
+
+        padding-right: 0.5rem;
+
+        summary {
+            font-style: italic;
+            padding-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+
+            th {
+                background-color: var(--color-acct);
+            }
+
+            tr:nth-of-type(even) {
+                background-color: var(--color-acct);
+            }
+
+        }
+    }
+}
+
+/* Changes for dark theme */
+@media (prefers-color-scheme: dark) {
+
+    .searchBar {
+        border: 2px #fff solid;
+        .searchButton {
+            background-color: var(--color-comp);
+            i {
+                color: #fff;
+            }
+        }
+    }
+
+    .flipButton {
+        box-shadow: 0 0 1rem 0 var(--color-acct) inset;
+    }
+
+    .nextButton {
+        box-shadow: 0 0 1rem 0 var(--color-acct) inset;
+    }
+
+    .cardContainer {
+        box-shadow: 0.5rem 0.5rem 2rem 0 var(--color-main);
+    }
+
+    .cardBack {
+
+        .dataContainer {
+
+            .dataGrid {
+
+                ul {
+                    border-color: var(--color-acct);
+                }
+
+                .rowHeader {
+                    border-color: var(--color-acct);
+                }
+
+                .rowHeader:nth-of-type(odd) {
+                    background-color: var(--color-dark);
+                }
+
+                .rowHeader:nth-of-type(even) {
+                    background-color: var(--color-comp);
+                }
+            }
+        }
+
+        .videoContainer {
+            video {
+                filter: invert(100%);
+            }
+        }
+
+        .examplesContainer {
+            table {
+                th {
+                    background-color: var(--fcolor-acct);
+                }
+
+                tr:nth-of-type(even) {
+                    background-color: var(--fcolor-acct);
+                }
+            }
+        }
+    }
+}
+
+/*
+Changes for mobile displays
+    - Unset all position attributes
+    - Have the card take up a little more space
+    - Set the card to scroll on overflow
+    - Get all the elements to span the width of the card
+*/
+@media (max-width: 1000px) {
+
+    .cardContainer{
+        height: 75%;
+        width: 90%;
+    }
+
+    .cardBack {
+
+        justify-content: unset;
+        position: unset;
+        overflow: auto;
+
+        h2 {
+            position: unset;
+        }
+
+        .dataContainer {
+            position: unset;
+            height: unset;
+            width: 100%;
+        }
+        .videoContainer {
+            position: unset;
+        }
+        .examplesContainer {
+            position: unset;
+            top: unset;
+            left: unset;
+            height: unset;
+            width: 100%;
+            overflow: unset;
+            padding-right: unset;
+
+            summary {
+                padding-top: 1rem;
+            }
+        }
+
+    }
+}
