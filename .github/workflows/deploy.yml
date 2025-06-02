@@ -32,8 +32,8 @@ jobs:
 
         steps:
 
-            - name: Print Working Dir
-              run: pwd
+            - name: CD
+              run: cd client
 
             - name: Checkout
               uses: actions/checkout@v4
