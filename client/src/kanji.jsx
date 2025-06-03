@@ -1,27 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api_url } from './util.jsx';
 import '../styles/kanji.css';
 
 const kroot = `${api_url}/kanji`;
+const default_kanji = '先生安飲雨';
 
-async function get(path) {
-    console.log(`${kroot}/${path}`);
-    const res = await fetch(`${kroot}/${path}`);
+async function fetchKanji(k) {
+    const res = await fetch(`${kroot}/${k}`);
     const data = await res.json();
     return data;
 }
 
-async function get_kanji(k) {
-    return get(k);
-}
+function VideoContainer({k, play}) {
 
-async function get_random_kanji() {
-    return get('random');
-}
+    const ref = useRef(null);
 
-function anim_path(k) { return `${kroot}/anim/${k}`; }
-
-function VideoContainer({k}) {
+    useEffect(() => {
+        if (play) {
+            ref.current.play();
+        } else {
+            ref.current.pause();
+        }
+    }, [play])
 
     // Two-second delay before looping the video
     function handleEnded(event) {
@@ -30,7 +30,7 @@ function VideoContainer({k}) {
 
     return (
         <div className='videoContainer'>
-            <video onEnded={handleEnded} muted src={anim_path(k)}></video>
+            <video onEnded={handleEnded} muted src={`${kroot}/anim/${k}`} ref={ref}></video>
         </div>
     );
 }
@@ -55,22 +55,16 @@ function DataItem({name, info}) {
         } else {
             return <li key={idx} lang={lang}>{x}</li>;
         }
-    })
-
-    let list;
-
-    if (name == 'Radical') {
-        list = <ul className='radical'>{listItems}</ul>;
-    } else {
-        list = <ul>{listItems}</ul>;
-    }
+    });
 
     return (
         <>
             <div className='rowHeader'>
                 <h3>{name}</h3>
             </div>
-            {list}
+            <ul>
+                {listItems}
+            </ul>
         </>
 
     );
@@ -109,7 +103,7 @@ function ExamplesContainer({examples}) {
     const rows = examples.map((ex) => {
         idx += 1;
         return <Example key={idx} ex={ex ?? ['（', '']} />;
-    })
+    });
 
     return (
         <div className='examplesContainer'>
@@ -132,13 +126,13 @@ function ExamplesContainer({examples}) {
     )
 }
 
-function CardBack({data}) {
+function CardBack({data, playVideo}) {
 
     return (
         <div className='cardBack'>
 
             <h2 lang='jp'>{data.kanji}</h2>
-            <VideoContainer k={data.kanji} />
+            <VideoContainer k={data.kanji} play={playVideo} />
             <DataContainer data={data} />
             <ExamplesContainer examples={data.examples ?? []} />
 
@@ -154,80 +148,122 @@ function CardFront({data}) {
     );
 }
 
-function CardContainer({data}) {
+function CardContainer({data, showFront, visible}) {
+
+    const [style, setStyle] = useState({});
+
+    useEffect(() => {
+        setStyle({
+            transform: showFront ? '' : 'rotateY(180deg)',
+            visibility: visible ? 'visible' : 'hidden'
+        });
+    }, [showFront, visible])
+
     return (
-            <div className='cardContainer'>
+            <div className='cardContainer' style={style}>
                 <CardFront data={data}/>
-                <CardBack data={data}/>
+                <CardBack data={data} playVideo={!showFront} />
             </div>
     );
 }
 
-function KanjiPage() {
-    const [data, setData] = useState({});
+function CardStack({kanji}) {
+
+    const [data, setData] = useState([]);
     const [showFront, setShowFront] = useState(true);
-    const [next, setNext] = useState(true);
+    const [showCardNum, setShowCardNum] = useState(0);
 
-    function flipCard() {
-        const card = document.querySelector('.cardContainer');
-        card.style.transform = card.style.transform ? '' : 'rotateY(180deg)';
+    // Get the data for each kanji in the input string
+    useEffect(() => {
 
-        const video = document.querySelector('video');
-        if (showFront) { video.play(); }
-        else { video.pause(); }
-        setShowFront(!showFront)
+        async function runFetchKanji() {
+            const res = await fetchKanji(kanji);
+            setData(Object.values(res));
+        }
+
+        runFetchKanji();
+        setShowCardNum(0);
+        setShowFront(true);
+
+    }, [kanji])
+
+    // Indexing helpers
+    function getPrevIdx() {
+        return (showCardNum == 0) ? (data.length - 1) : ((showCardNum - 1) % data.length);
     }
 
-    function handleFlipButtonClick(event) { flipCard(); }
+    function getNextIdx() {
+        return (showCardNum + 1) % data.length;
+    }
+
+    // Button Handlers
+    function handleFlipButtonClick(event) { setShowFront(!showFront); }
 
     function handleNextButtonClick(event) {
-        if (!showFront) { flipCard(); }
-        setTimeout(() => setNext(!next), 1000);
-    }
-
-    function handleSearchSubmit(event) {
-        event.preventDefault();
-        const searchInput = document.querySelector('.searchInput')
-        const userInput = searchInput.value;
-        if (userInput.length > 1) {
-            searchInput.style.border = '2px red solid';
-            searchInput.value = '';
-            searchInput.placeholder = 'Only one Kanji at a time';
+        const next = getNextIdx();
+        if (!showFront) {
+            setShowFront(true);
+            setTimeout(() => setShowCardNum(next), 1000);
         } else {
-            searchInput.style.border = '';
-            searchInput.placeholder = 'Kanji Lookup';
+            setShowCardNum(next);
         }
-        async function startFetch() {
-            setData({});
-            const res = await get_kanji(userInput);
-            setData(res);
-        }
-        if (!showFront) { flipCard(); }
-        startFetch();
     }
 
-    useEffect(() => {
-        async function startFetch() {
-            setData({})
-            const res = await get_random_kanji();
-            setData(res);
+    function handlePrevButtonClick(event) {
+        const next = getPrevIdx();
+        if (!showFront) {
+            setShowFront(true);
+            setTimeout(() => setShowCardNum(next), 1000);
+        } else {
+            setShowCardNum(next);
         }
-        startFetch();
-    }, [next]);
+    }
+
+    // Construct cards
+    let idx = -1;
+    const cards = data.map((x) => {
+        idx += 1
+        return <CardContainer key={idx} data={x} showFront={showFront} visible={showCardNum == idx} />;
+    });
 
     return (
-        data && (
-            <>
-                <form className='searchBar' onSubmit={handleSearchSubmit}>
-                    <input lang='jp' type='text' placeholder='Kanji Lookup' className='searchInput'></input>
-                    <button className='searchButton' type='submit'><i className='fa fa-search'></i></button>
-                </form>
-                <CardContainer data={data} />
+        <div className='cardStack'>
+            {cards}
+            <div className='buttonArray'>
+                <button className='prevButton' onClick={handlePrevButtonClick}>&larr; {(data.length == 1)? '' : kanji[getPrevIdx()]}</button>
                 <button className='flipButton' onClick={handleFlipButtonClick}>Flip</button>
-                <button className='nextButton' onClick={handleNextButtonClick}>Random</button>
-            </>
-        )
+                <button className='nextButton' onClick={handleNextButtonClick}>{(data.length == 1) ? '' : kanji[getNextIdx()]} &rarr;</button>
+            </div>
+        </div>
     );
+}
+
+function SearchBar({inputDefault, onSubmit}) {
+    return (
+        <form className='searchBar' onSubmit={onSubmit}>
+            <input lang='jp' type='text' defaultValue={inputDefault} name='kanjiInput' className='searchInput'></input>
+            <button className='searchButton' type='submit'><i className='fa fa-search'></i></button>
+        </form>
+    )
+}
+
+function KanjiPage() {
+
+    const [kanji, setKanji] = useState(default_kanji);
+
+    function handleSearchSubmit(event){
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        setKanji(formData.get('kanjiInput') ?? '');
+    }
+
+    return (
+        <>
+            <SearchBar inputDefault={default_kanji} onSubmit={handleSearchSubmit} />
+            <CardStack kanji={kanji} />
+        </>
+    )
+
 }
 
 export { KanjiPage };

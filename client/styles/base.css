@@ -21,19 +21,15 @@
     font-family: sans-serif;
 }
 
-*:lang(jp) {
-    font-family: "Noto Sans JP", sans-serif;
-    font-size: 2rem;
-    font-weight: 580;
-}
-
 @font-face {
     font-family: radical;
     src: url("../assets/JapaneseRadicals-Regular.otf") format("opentype");
 }
 
-.radical {
-    font-family: radical;
+*:lang(jp) {
+    font-family: "Noto Sans JP", radical, sans-serif;
+    font-size: 2rem;
+    font-weight: 580;
 }
 
 html {
@@ -50,7 +46,7 @@ html {
 
 body {
 
-    height: 100vh;
+    height: 90vh;
     width: 100vw;
 
     display: flex;
