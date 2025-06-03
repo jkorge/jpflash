@@ -55,11 +55,11 @@
         }
 
         .flipButton {
-            background-color: var(--color-correct);
+            background-color: #2a52be;
         }
 
         .nextButton {
-            background-color: #2a52be;
+            background-color: var(--color-correct);
         }
 
         .prevButton {
