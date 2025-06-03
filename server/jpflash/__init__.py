@@ -6,6 +6,12 @@ from flask import Flask
 
 app = Flask(__name__)
 
+def _take_care_of_nan(x: list[dict]):
+    for y in x:
+        for k,v in y.items():
+            if isinstance(v, float) and isnan(v):
+                y[k] = None
+
 def _get(df, col, val):
     try:
         res = df.loc[df[col] == val].iloc[0].to_dict()

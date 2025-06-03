@@ -1,19 +1,25 @@
 import os
 
+import numpy as np
 from flask import Blueprint, send_file
 
-from jpflash import _get, _random
+from jpflash import _get, _random, _take_care_of_nan
 from jpflash.data import kanji, anim_dir
 
 bp = Blueprint('kanji', __name__, url_prefix='/kanji')
+N = len(kanji)
 
 @bp.route('/<string:k>')
 def get_kanji(k):
-    return _get(kanji, 'kanji', k)
-
-@bp.route('/random')
-def random_kanji():
-    res = _random(kanji)
+    records = (
+        kanji.loc[
+            kanji['kanji'].apply(lambda x: x in k)
+        ]
+        .to_dict(orient='records')
+    )
+    records = {x['kanji']: x for x in records}
+    res = [records[i] for i in k if i in records]
+    _take_care_of_nan(res)
     return res
 
 @bp.route('/anim/<string:k>')
