@@ -29,3 +29,9 @@ def anim(k):
         return send_file(filepath, mimetype='video/webm')
     else:
         return {}
+
+@bp.after_request
+def after_request(response):
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = 'kanji.korge.dev'
+    return response
