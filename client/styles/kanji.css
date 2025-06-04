@@ -1,61 +1,138 @@
-.searchBar {
-    position: relative;
-    width: 75%;
-    height: 2rem;
-    margin: 2rem;
+dialog {
+    justify-self: center;
     align-self: center;
-    border: 2px #000 solid;
+    border: none;
+    border-radius: 1rem;
 
-    .searchInput {
-        position: absolute;
-        left: 0;
-        width: 95%;
-        height: 100%;
-        font-size: 1.5rem;
-        border: none;
+}
+
+dialog::backdrop {
+    background-color: var(--fcolor-main);
+}
+
+button {
+    height: 2rem;
+    width: 25%;
+    align-self: center;
+    border: unset;
+    color: #fff;
+    font-size: 1.5rem;
+    /*box-shadow: 0.5rem 0.5rem 1rem 0 #a9a9a9;*/
+    box-shadow: 0 0 1rem 0.2rem #a9a9a9;
+    margin-bottom: 2rem;
+}
+
+.buttonArray {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mainButtonArray {
+    align-self: center;
+    width: 75%;
+
+    .chooseSetButton {
+        background-color: var(--color-blue);
+    }
+
+    .shuffleButton {
+        background-color: var(--color-incorrect);
     }
 
     .searchButton {
-        position: absolute;
-        right: 0%;
-        width: 5%;
-        height: 100%;
-        background-color: var(--color-main);
-        border: none;
-        color: #000;
-        font-size: 1.3rem;
+        background-color: var(--color-correct);
     }
+}
 
+.setSelectionModal {
+    width: 25%;
+
+    .setList {
+
+        width: 100%;
+        text-align: center;
+        overflow: auto;
+        border: none;
+        background-color: var(--color-dark);
+        color: #fff;
+        padding: 1rem;
+
+        option {
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 1rem;
+        }
+
+        option:hover {
+            background-color: var(--fcolor-main);
+        }
+    }
+}
+
+.searchModal {
+    position: absolute;
+    top: -80%;
+    height: 20%;
+    width: 75%;
+    background-color: transparent;
+
+    .searchBar {
+        position: absolute;
+        width: 90%;
+        height: 2rem;
+        top: calc(50% - 1rem);
+        left: 5%;
+        justify-self: center;
+        border: none;
+
+        .searchInput {
+            position: absolute;
+            left: 0;
+            width: 90%;
+            height: 100%;
+            font-size: 1.5rem;
+            border: 2px #000 solid;
+        }
+
+        .searchButton {
+            position: absolute;
+            right: 0%;
+            width: 10%;
+            height: 100%;
+            background-color: var(--color-main);
+            border: 2px #000 solid;
+            border-left: none;
+            color: #000;
+            font-size: 1.3rem;
+        }
+
+    }
 }
 
 .cardStack {
     position: relative;
-    height: 75%;
+    height: 80%;
     width: 75%;
     align-self: center;
     border-radius: 10px;
     font-size: 1.5rem;
+    margin-top: 2rem;
 
     .buttonArray{
-        display: flex;
-        justify-content: space-between;
+
+        position: absolute;
+        bottom: 0;
+        left: 0;
         width: 100%;
-        height: 10%;
 
         .flipButton,
         .nextButton,
         .prevButton {
-            height: 2rem;
-            width: 25%;
-            align-self: center;
-            border: unset;
-            color: #fff;
-            font-size: 1.5rem;
-            box-shadow: 0.5rem 0.5rem 1rem 0 #a9a9a9;
+            margin-top: 3rem;
         }
 
         .flipButton {
-            background-color: #2a52be;
+            background-color: var(--color-blue);
         }
 
         .nextButton {
@@ -69,14 +146,15 @@
 
     .cardContainer {
         position: absolute;
-        top: 10%;
+        top: 0;
         left: 0;
-        height: 90%;
+        height: 85%;
         width: 100%;
         transition: transform 1.5s;
         transform-style: preserve-3d;
 
-        box-shadow: 0.5rem 0.5rem 2rem 0.05rem var(--color-dark);
+        /*box-shadow: 0.5rem 0.5rem 2rem 0.05rem var(--color-dark);*/
+        box-shadow: 0 0 1rem 0.2rem var(--color-dark);
 
         .cardFront,
         .cardBack {
@@ -142,7 +220,6 @@
 
                         display: flex;
                         flex-direction: column;
-                        /*justify-content: center;*/
                         padding-top: 0.5rem;
 
                         list-style: none;
@@ -156,6 +233,7 @@
                         li {
                             flex: 0;
                             padding-left: 1rem;
+                            padding-bottom: 0.5rem;
                         }
                     }
 
@@ -245,26 +323,43 @@
 /* Changes for dark theme */
 @media (prefers-color-scheme: dark) {
 
-    .searchBar {
-        border: 2px #fff solid;
-        .searchButton {
+    dialog {
+        background-color: #000;
+        color: #fff;
+    }
+
+    dialog::backdrop {
+        background-color: var(--fcolor-dark);
+    }
+
+    button {
+        box-shadow: 0 0 1rem 0.2rem var(--color-main);
+    }
+
+    .setSelectionModal {
+        .setList {
             background-color: var(--color-comp);
-            i {
-                color: #fff;
+            color: #fff;
+        }
+
+        option:hover {
+            background-color: var(--fcolor-comp);
+        }
+    }
+
+    .searchModal{
+
+        .searchBar {
+            .searchButton {
+                background-color: var(--color-comp);
+                i {
+                    color: #fff;
+                }
             }
         }
     }
 
     .cardStack {
-
-        .buttonArray {
-            .flipButton,
-            .prevButton,
-            .nextButton {
-                box-shadow: 0 0 1rem 0.2rem var(--color-acct);
-            }
-
-        }
 
         .cardContainer {
             border: 1px solid var(--color-main);
@@ -324,6 +419,11 @@ Changes for mobile displays
     - Get all the elements to span the width of the card
 */
 @media (max-width: 1000px) {
+
+    button {
+        font-size: 1rem;
+        font-weight: bold;
+    }
 
     .cardStack {
         .cardContainer {
