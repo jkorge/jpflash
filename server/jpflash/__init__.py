@@ -1,8 +1,14 @@
 import json
+from collections.abc import Callable
 from math import isnan
 from random import randint
 
+import pandas as pd
+import numpy as np
+
 from flask import Flask
+
+__all__ = ['app']
 
 app = Flask(__name__)
 
@@ -23,19 +29,6 @@ def _get(df, col, val):
                 res[k] = None
         return res
 
-def _random(df):
-    try:
-        res = df.iloc[randint(0, len(df))].to_dict()
-    except:
-        res = dict()
-    finally:
-        for k,v in res.items():
-            if isinstance(v, float) and isnan(v):
-                res[k] = None
-        return res
-
 from .kanji import bp as kbp
-from .radicals import bp as rbp
 
 app.register_blueprint(kbp)
-app.register_blueprint(rbp)
