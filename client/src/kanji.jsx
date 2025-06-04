@@ -273,7 +273,7 @@ function SetSelectionModal({onChange, ref}){
         idx++;
         return <option key={idx} value={`grade-${x}`}>{`Grade ${x}`}</option>
     });
-    const genkiChapters = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((x) => {
+    const genkiChapters = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((x) => {
         idx++;
         return <option key={idx} value={`genki-${x}`}>{`Ch. ${x}`}</option>
     })
