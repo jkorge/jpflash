@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 
 const api_url = 'https://jkorge.pythonanywhere.com';
-const content = createRoot(document.getElementById('content'));
+const content = createRoot(document.getElementById('root'));
 
 function render(id, component) {
     createRoot(document.getElementById(id)).render(component);
