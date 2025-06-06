@@ -48,17 +48,11 @@ def get_kanji_set(set_name):
         else:
             res = kanji.loc[kanji['genki'] == chapter, 'kanji']
 
-    ########################################################################
-    # TODO: Implement pagination for large sets
-    ########################################################################
+    elif set_name.lower() == 'genki-all':
+        res = kanji.loc[~kanji['genki'].isna(), 'kanji']
 
-    # elif set_name.lower() == 'genki-all':
-    #     res = kanji.loc[~kanji['genki'].isna(), 'kanji']
-
-    # elif set_name.upper() == 'N2':
-    #     res = kanji['kanji']
-
-    ########################################################################
+    elif set_name.upper() == 'N2':
+        res = kanji['kanji']
 
     else:
         res = empty_series
