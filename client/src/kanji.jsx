@@ -6,13 +6,13 @@ const kroot = `${api_url}/kanji`;
 const default_kanji = '漢字';
 
 async function fetchKanji(k) {
-    const res = await fetch(`${kroot}/${k}`);
+    const res = await fetch(`${kroot}/${k}`, {cache: 'force-cache'});
     const data = await res.json();
     return data;
 }
 
 async function fetchSet(name) {
-    const res = await fetch(`${kroot}/set/${name}`);
+    const res = await fetch(`${kroot}/set/${name}`, {cache: 'force-cache'});
     const data = await res.text();
     return data;
 }
@@ -21,17 +21,17 @@ function VideoContainer({k, play}) {
 
     const ref = useRef(null);
 
-    useEffect(() => {
+    if (ref.current) {
         if (play) {
-            ref.current.play();
+            setTimeout(() => ref.current.play(), 1000);
         } else {
             ref.current.pause();
         }
-    }, [play])
+    }
 
     // Two-second delay before looping the video
     function handleEnded(event) {
-        setTimeout(() => { event.target.closest('video').play(); }, 2000);
+        setTimeout(() => event.target.closest('video').play(), 2000);
     }
 
     return (
@@ -109,7 +109,7 @@ function Example({k, idx, ex}) {
             <td lang='jp'>{kana_text.slice(0, -1)}</td>
             <td>{eng}</td>
         </tr>
-    )
+    );
 
 }
 
@@ -140,7 +140,7 @@ function ExamplesContainer({k, examples}) {
                 </table>
             </details>
         </div>
-    )
+    );
 }
 
 function CardBack({data, playVideo}) {
@@ -167,17 +167,11 @@ function CardFront({data}) {
 
 function CardContainer({data, showFront, visible}) {
 
-    const [style, setStyle] = useState({});
-
-    useEffect(() => {
-        setStyle({
-            transform: showFront ? '' : 'rotateY(180deg)',
-            visibility: visible ? 'visible' : 'hidden'
-        });
-    }, [showFront, visible])
+    const v = visible ? 'visible' : 'hidden';
+    const t = (visible && !showFront) ? 'rotateY(180deg)' : ''
 
     return (
-            <div className='cardContainer' style={style}>
+            <div className='cardContainer' style={{visibility: v, transform: t}}>
                 <CardFront data={data}/>
                 <CardBack data={data} playVideo={visible && !showFront} />
             </div>
@@ -202,7 +196,7 @@ function CardStack({kanji}) {
         setShowCardNum(0);
         setShowFront(true);
 
-    }, [kanji])
+    }, [kanji]);
 
     // Indexing helpers
     function getPrevIdx() {
@@ -276,7 +270,7 @@ function SetSelectionModal({onChange, ref}){
     const genkiChapters = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((x) => {
         idx++;
         return <option key={idx} value={`genki-${x}`}>{`Ch. ${x}`}</option>
-    })
+    });
 
     return (
         <dialog className='setSelectionModal' closedby='any' ref={ref}>
@@ -349,8 +343,8 @@ function KanjiPage() {
             {searchModal}
             <CardStack kanji={kanji} />
         </>
-    )
+    );
 
 }
 
-export { KanjiPage };
+export default KanjiPage;
