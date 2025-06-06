@@ -165,46 +165,47 @@ function CardFront({data}) {
     );
 }
 
-function CardContainer({data, showFront, visible}) {
+function CardContainer({k, showFront}) {
 
-    const v = visible ? 'visible' : 'hidden';
-    const t = (visible && !showFront) ? 'rotateY(180deg)' : ''
+    const [data, setData] = useState({});
+    const t = (!showFront) ? 'rotateY(180deg)' : '';
+
+    useEffect(() => {
+        async function runFetchKanji() {
+            const res = await fetchKanji(k);
+            setData(Object.values(res)[0]);
+        }
+        runFetchKanji();
+    }, [k]);
 
     return (
-            <div className='cardContainer' style={{visibility: v, transform: t}}>
+            <div className='cardContainer' style={{transform: t}}>
                 <CardFront data={data}/>
-                <CardBack data={data} playVideo={visible && !showFront} />
+                <CardBack data={data} playVideo={!showFront} />
             </div>
     );
 }
 
+
 function CardStack({kanji}) {
 
-    const [data, setData] = useState([]);
+    const [kanjiArr, setKanjiArr] = useState([]);
     const [showFront, setShowFront] = useState(true);
     const [showCardNum, setShowCardNum] = useState(0);
 
-    // Get the data for each kanji in the input string
     useEffect(() => {
-
-        async function runFetchKanji() {
-            const res = await fetchKanji(kanji);
-            setData(Object.values(res));
-        }
-
-        runFetchKanji();
+        setKanjiArr(kanji.split(''));
         setShowCardNum(0);
         setShowFront(true);
-
     }, [kanji]);
 
     // Indexing helpers
     function getPrevIdx() {
-        return (showCardNum == 0) ? (data.length - 1) : ((showCardNum - 1) % data.length);
+        return (showCardNum == 0) ? (kanjiArr.length - 1) : ((showCardNum - 1) % kanjiArr.length);
     }
 
     function getNextIdx() {
-        return (showCardNum + 1) % data.length;
+        return (showCardNum + 1) % kanjiArr.length;
     }
 
     // Button Handlers
@@ -230,21 +231,44 @@ function CardStack({kanji}) {
         }
     }
 
-    // Construct cards
-    let idx = -1;
-    const cards = data.map((x) => {
-        idx++;
-        return <CardContainer key={idx} data={x} showFront={showFront} visible={showCardNum == idx} />;
-    });
+    const hideNextPrev = kanjiArr.length < 2;
 
-    return (
+    return (kanjiArr.length > 0) && (
+
         <div className='cardStack'>
-            {cards}
+
+            <CardContainer k={kanjiArr[showCardNum]} showFront={showFront} visible={true} />
+
             <div className='buttonArray'>
-                <button className='prevButton' onClick={handlePrevButtonClick}>&larr; {(data.length == 1)? '' : kanji[getPrevIdx()]}</button>
-                <button className='flipButton' onClick={handleFlipButtonClick}>Flip</button>
-                <button className='nextButton' onClick={handleNextButtonClick}>{(data.length == 1) ? '' : kanji[getNextIdx()]} &rarr;</button>
+
+                {/* Previous */}
+                <button
+                    className='prevButton'
+                    onClick={handlePrevButtonClick}
+                    style={{visibility: hideNextPrev ? 'hidden': 'visible'}}
+                >
+                    &larr; {kanji[getPrevIdx()]}
+                </button>
+
+                {/* Flip */}
+                <button
+                    className='flipButton'
+                    onClick={handleFlipButtonClick}
+                >
+                    Flip
+                </button>
+
+                {/* Next */}
+                <button
+                    className='nextButton'
+                    onClick={handleNextButtonClick}
+                    style={{visibility: hideNextPrev ? 'hidden': 'visible'}}
+                >
+                    {kanji[getNextIdx()]} &rarr;
+                </button>
+
             </div>
+
         </div>
     );
 }
@@ -276,13 +300,14 @@ function SetSelectionModal({onChange, ref}){
         <dialog className='setSelectionModal' closedby='any' ref={ref}>
             <form method='dialog'>
                 <select className='setList' name='selectedSet' size='10' onChange={onChange}>
-                    {/*<option value='n2'>All N2</option>*/}
-                    <optgroup label='Grade Level'>
-                        {gradeList}
-                    </optgroup>
-                    <optgroup label='Genki Chapters'>
+                    <option value=''></option>
+                    <option value='n2'>All N2</option>
+                    <optgroup label='Genki'>
+                        <option key={idx} value='genki-all'>All Genki</option>
                         {genkiChapters}
-                        {/*<option key={idx} value='genki-all'>All</option>*/}
+                    </optgroup>
+                    <optgroup label='Grade'>
+                        {gradeList}
                     </optgroup>
                 </select>
             </form>
@@ -310,7 +335,10 @@ function KanjiPage() {
             const res = await fetchSet(formData.get('selectedSet'));
             setKanji(res);
         }
-        runFetchSet();
+        if (formData.get('selectedSet') != '') { runFetchSet(); }
+
+        // Clear selection
+        event.target.value = null;
     }
 
     const setSelectionModal = <SetSelectionModal onChange={handleSetSelection} ref={setSelectionModalRef} />
@@ -335,7 +363,10 @@ function KanjiPage() {
     return (
         <>
             <div className='buttonArray mainButtonArray'>
-                <button className='shuffleButton' onClick={handleShuffleButtonClick}>Shuffle</button>
+                {
+                    (kanji.length > 0) &&
+                    <button className='shuffleButton' onClick={handleShuffleButtonClick}>Shuffle</button>
+                }
                 <button className='chooseSetButton' onClick={handleChooseSetButtonClick}>Choose Set</button>
                 <button className='searchButton' onClick={handleSearchButtonClick}>Search</button>
             </div>
