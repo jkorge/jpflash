@@ -17,7 +17,6 @@ button {
     border: unset;
     color: #fff;
     font-size: 1.5rem;
-    /*box-shadow: 0.5rem 0.5rem 1rem 0 #a9a9a9;*/
     box-shadow: 0 0 1rem 0.2rem #a9a9a9;
     margin-bottom: 2rem;
 }
@@ -430,7 +429,6 @@ Changes for mobile displays
             .cardBack {
 
                 justify-content: unset;
-                position: unset;
                 overflow: auto;
 
                 h2 {
@@ -439,7 +437,6 @@ Changes for mobile displays
 
                 .dataContainer {
                     position: unset;
-                    height: unset;
                     width: 100%;
                 }
                 .videoContainer {
